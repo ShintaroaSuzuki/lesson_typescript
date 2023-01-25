@@ -10,7 +10,7 @@
         "typescript": "^4.9.4"
     },
     "scripts": {
-        "serve": "marp -s .",
+        "dev": "marp -s .",
         "build:pdf": "marp --pdf --allow-local-files --theme gradient.css slide.md"
     }
 }
