@@ -9,6 +9,9 @@ $ brew install marp-cli
 ## 実行
 
 ```
-$ marp -s .
-$ open http://localhost:8080/slide.md
+# dev サーバー起動
+$ yarn dev
+
+# PDF 出力
+$ yarn build:pdf
 ```
