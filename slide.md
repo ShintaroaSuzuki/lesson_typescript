@@ -595,7 +595,7 @@ let contract: Pick<Contract, "contractId" | "clientName"> = {
 
 ## Omit<T, K>
 
-任意のプロパティをオブジェクトを取得します。
+任意のプロパティを除外したオブジェクトを取得します。
 
 ```ts
 type Person = {
@@ -634,7 +634,7 @@ const a: NonNullable<NullableNumber> = null;
 
 ## ReturnType<T>
 
-型引数に渡した関数型の返り値の型を取得する。
+型引数に渡した関数型の返り値の型を取得します。
 
 ```ts
 type GetString = () => string;
