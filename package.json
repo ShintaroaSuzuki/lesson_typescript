@@ -3,7 +3,6 @@
     "version": "1.0.0",
     "main": "index.js",
     "repository": "https://github.com/ShintaroaSuzuki/lesson_typescript.git",
-    "author": "shintaro-x1 <suzuki.s@x-point-1.net>",
     "license": "MIT",
     "devDependencies": {
         "@types/node": "^18.11.18",
