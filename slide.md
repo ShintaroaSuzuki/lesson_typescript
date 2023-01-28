@@ -193,11 +193,11 @@ let tuple: [number, number] = [0, 1, 2];
 //        Source has 3 element(s) but target allows only 2.
 ```
 
-タプルの中身は、可変長の要素もサポートしており、これを使うと最小限の長さについて制約を持った配列を表現できます。
+タプルの中身は、可変長の要素もサポートしており、これを使うと最小の長さについて制約を持った配列を表現できます。
 
 ```ts
 let NoEmptyNumber: [number, ...number[]] = [0];
-//OK
+// OK
 
 let NoEmptyNumber: [number, ...number[]] = [];
 // Error: Type '[]' is not assignable to type '[number, ...number[]]'.
@@ -360,7 +360,7 @@ let workHour: WorkHour = {
 
 # 3.2. ジェネリック型
 
-はじめに考えられるのは `any` ですが、これは ② の制約は満たしていいますが、① の制約は満たしていません。
+はじめに考えられるのは `any` ですが、これは ② の制約は満たしていますが、① の制約は満たしていません。
 
 ```ts
 const getArg: (arg: any) => any = (arg) => {
@@ -439,7 +439,7 @@ const nums: NoEmptyArray<Numbers> = [1, 2, 3];
 // Error: Type 'number' is not assignable to type 'Numbers'.
 ```
 
-`NoEmptyArray<Numbers>` は `Numbers` の配列を要求しているので、下記のようにしなければなりません。
+上記の実装では、`NoEmptyArray<Numbers>` は `Numbers` の配列を要求しているので、下記のように修正しなければなりません。
 
 ```ts
 const nums: NoEmptyArray<Numbers[number]> = [1, 2, 3];
@@ -801,7 +801,7 @@ fetch のラッパー関数を作る時、fetch の引数の型をこのよう�
 
 # 3.7. <発展> 集合としての型
 
-XOR (右図) を表現する演算子が TypeScript に用意されていれば、オブジェクトどうしの合併型に関する問題に悩まされずに済むのですが、組み込みでそのような機能はありませんでした。
+XOR (右図) を表現する演算子が TypeScript に用意されていれば、オブジェクトどうしの合併型に関する問題に悩まされずに済むのですが、組み込みでそのような機能はありません。
 
 ![bg right:40% 100%](https://medium-company.com/wp-content/uploads/2020/10/taisyousasyuugou.png)
 
