@@ -306,6 +306,8 @@ let miyajima: Person & Wolf = {
 
 **3.6. ユーティリティ型**
 
+**3.7. <発展> 集合としての型**
+
 ---
 
 # 3.1. ルックアップ型
@@ -512,7 +514,7 @@ type ContractProperty<T extends ContractKey> = Contract[T];
 
 # 3.6. ユーティリティ型
 
-最後に、TypeScript のビルトインパッケージで定義されているユーティリティ型を取り上げます。
+TypeScript には、ビルトインパッケージで定義されている便利なユーティリティ型があります。
 
 主要なユーティリティ型のみを取り上げるので、他のユーティリティ型に興味があれば公式ドキュメントを参照してください。
 
@@ -647,6 +649,187 @@ const a: ReturnType<GetString> = getString();
 
 ---
 
+# 3.7. <発展> 集合としての型
+
+TypeScript の型は本質的には値の集合です。`{ a: "st" }` は、『プロパティ a に "st" という値が入っているという条件を満たしたオブジェクトの集合』になります。
+
+型 A と型 B の合併型 A | B は、集合 A と集合 B の和集合 A ∨ B と考えることができます。
+
+A ∨ B はもちろん A と B を部分集合に持ちますが、A ∧ B もまた、A ∨ B の部分集合です。
+
+## ![bg right:40% 100%](https://res.cloudinary.com/zenn/image/fetch/s--n0PmFfBl--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_1200/https://storage.googleapis.com/zenn-user-upload/deployed-images/a510d541b2c6026146660376.png%3Fsha%3D08b3a78634c7f1e533706df58b105c15b425b2c3)
+
+<!--
+後ほど紹介する参考書籍にも書いていない発展的な内容なので、抽象的な話はなんとなく聞いてくれればよいです。のちほど具体例を話します。
+-->
+
+---
+
+# 3.7. <発展> 集合としての型
+
+タッカーさんは娘のニーナと犬のアレキサンダーと暮らしているため、`MyFamily` という `Person` または `Dog` を指す型を作ります。
+
+```ts
+type Person = {
+    speak: () => void;
+};
+
+type Dog = {
+    bark: () => void;
+};
+
+type MyFamily = Person | Dog;
+```
+
+<!--
+何を言っているかわからないと思うので、具体例を見てみましょう。
+タッカーさんは娘のニーナと犬のアレキサンダーと暮らしているため、MyFamily という Person または Dog を指す型を作ります。
+しかし、この実装はある問題を抱えています。それは
+-->
+
+---
+
+# 3.7. <発展> 集合としての型
+
+この実装だと、人と犬のキメラを作れてしまいます。
+
+```ts
+const nina: MyFamily = {
+    speak: () => speck(),
+};
+
+const alexander: MyFamily = {
+    bark: () => bark(),
+};
+
+const chimera: MyFamily = {
+    speak: () => speak(),
+    bark: () => bark(),
+};
+// OK! 😮
+```
+
+<!--
+それは、この実装では、人と犬のキメラを作っても TypeScript がエラーを出してくれないという点です。
+このような悲劇を回避するために、どのように MyFamily の型を定義するべきだったのでしょうか？
+-->
+
+---
+
+# 3.7. <発展> 集合としての型
+
+A ∧ B を空集合とすることで、これを回避できます。
+
+人間ならば決して吠えない、犬ならば決してしゃべらないと定義することによって、人間であり犬であるという集合はなくなります。
+
+```ts
+type Person = {
+    speak: () => void;
+    bark?: never;
+};
+
+type Dog = {
+    speak?: never;
+    bark: () => void;
+};
+
+type MyFamily = Person | Dog;
+```
+
+<!--
+never を使うと、そこに値を割り当てるだけで型エラーとなります。
+つまり、never は他のすべての型に割り当て可能ですが、逆に never にはどんな型も割り当てることができません。
+これを型理論ではボトムタイプと言います。
+逆に、unknown はどんな型にも割り当てが不可能ですが、すべての型は unknown に割り当てることが可能です。
+これを型理論ではスーパータイプと言います。
+-->
+
+---
+
+# 3.7. <発展> 集合としての型
+
+無事、ニーナとアレキサンダーは錬金術でキメラにされずに済みそうです。
+
+```ts
+const nina: MyFamily = {
+    speak: () => speck(),
+};
+
+const alexander: MyFamily = {
+    bark: () => bark(),
+};
+
+const chimera: MyFamily = {
+    speak: () => speak(),
+    bark: () => bark(),
+};
+// Error: Type '{ speak: () => void; bark: () => void; }' is not assignable to type 'MyFamily'.
+//        Type '{ speak: () => void; bark: () => void; }' is not assignable to type 'Dog'.
+//        Types of property 'speak' are incompatible.
+//        Type '() => void' is not assignable to type 'undefined'.
+```
+
+---
+
+# 3.7. <発展> 集合としての型
+
+fetchAPI という fetch のラッパー関数を作ろうとしており、method が GET のときは body に値を渡したくありません。
+
+この場合、次の実装でこれを実現できます。
+
+```ts
+type GetMethod = {
+    method: "GET";
+    body?: never;
+};
+
+type OtherMethod = {
+    method: "POST" | "PUT";
+    body?: object;
+};
+
+type FetchAPIProps = GetMethod | OtherMethod;
+```
+
+<!--
+別の例を見てみましょう
+fetch は GET メソッドの場合は body を持つべきではありません。
+fetch のラッパー関数を作る時、fetch の引数の型をこのようにすることで、method が GET のときは body に何かを渡したら型エラーとなるようにできます。
+-->
+
+---
+
+# 3.7. <発展> 集合としての型
+
+XOR (右図) を表現する演算子が TypeScript に用意されていれば、オブジェクトどうしの合併型に関する問題に悩まされずに済むのですが、組み込みでそのような機能はありませんでした。
+
+![bg right:40% 100%](https://medium-company.com/wp-content/uploads/2020/10/taisyousasyuugou.png)
+
+---
+
+# 3.7. <発展> 集合としての型
+
+### XOR を表現するジェネリック型を用意しました。
+
+```ts
+type Without<T, U> = { [K in Exclude<keyof T, keyof U>]?: never };
+
+export type XOR<T, U> = T | U extends object
+    ? (Without<T, U> & U) | (Without<U, T> & T)
+    : T | U;
+```
+
+**関連キーワード**
+
+-   マップ型
+-   ユーティリティ型 (Exclude)
+
+<!--
+今日説明した範囲でこのジェネリック型の解説をするのは困難なので、このジェネリック型の解説はしませんが、関連キーワードなどを調べながら、ぜひこのジェネリック型を読み解いてください。
+-->
+
+---
+
 # 演習 2
 
 ユーティリティ型を使って任意のプロパティのみをオプショナルにする型を作ってください。
@@ -665,6 +848,11 @@ let suzuki: SomePartial<Person, "age"> = {
 };
 // OK
 ```
+
+<!--
+発展の内容は用いません。どのユーティリティ型を組み合わせたらできるか考えてみてください。
+結構な難問だと思うので、できなくても気にしなくてよいです。
+-->
 
 ---
 
