@@ -5,6 +5,5 @@
         "strict": true,
         "module": "esnext",
         "outDir": "dist"
-    },
-    "include": ["src"]
+    }
 }

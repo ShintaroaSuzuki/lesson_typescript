@@ -879,6 +879,58 @@ type SomePartial<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
 ---
 
+# 環境構築
+
+TypeScript 環境のない方向けに、演習問題に取り組むための環境を用意する手順です。
+
+実際のプロジェクトでは、プロジェクトごとに適切な環境を設定してください。
+
+## node の環境を構築
+
+```shell
+$ brew install nodenv
+$ nodenv install 18.6.0
+$ nodenv global 18.6.0
+$ npm install -g yarn
+```
+
+---
+
+# 環境構築
+
+## TypeScript のインストール
+
+プロジェクトを作成し、`typescript` と `@types/node` をインストールします。
+
+```shell
+$ mkdir lesson_typescript
+$ cd lesson_typescript
+$ yarn init -y
+$ yarn add -D typescript @types/node
+```
+
+---
+
+# 環境構築
+
+## tsconfig.json の作成
+
+`tsconfig.json` は TypeScript の設定ファイルです。
+
+```json
+{
+    "compilerOptions": {
+        "target": "es2022",
+        "lib": ["es2022"],
+        "strict": true,
+        "module": "esnext",
+        "outDir": "dist"
+    }
+}
+```
+
+---
+
 ![bg left:40% 80%](https://m.media-amazon.com/images/I/71G0osmMgSL.jpg)
 
 # 『プログラミング TypeScript』
