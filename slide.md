@@ -881,7 +881,7 @@ type SomePartial<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
 # 環境構築
 
-TypeScript 環境のない方向けに、演習問題に取り組むための環境を用意する手順です。
+TypeScript 環境のない方向けの、演習問題に取り組むための環境を用意する手順です。
 
 実際のプロジェクトでは、プロジェクトごとに適切な環境を設定してください。
 
